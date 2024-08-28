@@ -2,7 +2,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Obtener el ID del evento desde la URL
     const urlParams = new URLSearchParams(window.location.search);
-    const eventId = urlParams.get('id');
+    // const eventId = urlParams.get('id');
+    const eventId = parseInt(urlParams.get('id')); // Convertir a número
+
 
     if (eventId) {
         // Cargar los datos del evento desde localStorage

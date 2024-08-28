@@ -98,3 +98,32 @@ function deleteEvent(eventId) {
 
 // Cargar los eventos al cargar la página
 loadEventsFromLocalStorage();
+
+    // Agregar funcionalidad de eliminación a cada botón de eliminar al crear la tarjeta
+    card.querySelector('.delete-event').addEventListener('click', () => {
+        Swal.fire({
+            title: "¿Estás segur@?",
+            text: "¡Una vez que elimines este evento no podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Eliminar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Eliminar la card de evento
+                card.remove();
+
+                // Función para borrar del localStorage
+                removeEventFromLocalStorage(eventId.id);
+
+                Swal.fire(
+                    '¡Eliminado!',
+                    'El evento ha sido eliminado.',
+                    'success'
+                );
+            }
+        });
+    });
+}
