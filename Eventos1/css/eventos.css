@@ -39,7 +39,14 @@
         background-color:#F90052;
         color: #fff;
         font-size: 1.3rem;
+        border-color:#F90052;
     }
+
+    #button1 :hover {
+transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+
+
     
     #div1 {
         background-color: #050831;

@@ -4,8 +4,9 @@ const newEventForm = document.querySelector('#formularioEvento');
 // Add an 'onsubmit' event listener
 newEventForm.addEventListener('submit', function(event) {
     console.log('Formulario enviado');
-    // Prevent default action
+    // Prevenir la acción por defecto
     event.preventDefault();
+
 
     // Get the values of the inputs
     const item = {

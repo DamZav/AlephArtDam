@@ -6,44 +6,75 @@ function createEventCard(event) {
     const card = document.createElement('div');
     card.className = 'col-md-4'; // Cada tarjeta ocupará 1/3 del ancho del contenedor
 
-   card.innerHTML = `
-
-   <div class="event-cards row">
-               
-        <div class="col">
-            <div class="card p-3 h-100 mb-4 d-flex flex-column">
-                <div class="row g-0">
-                    <!-- Imagen -->
-                    <div class="col-8">
-                        <img src="${event.image}" class="img-fluid" alt="Imagen">
-                   </div>
-                          
-                    <div class="col-4 d-flex flex-column align-items-center justify-content-between">
-                       <div class="text-center">
-                           <h1 id="day" class="display-4 text-danger">${event.day}</h1>
-                            <p id="month" class="text-primary">${event.month}</p>
-                       </div>
-                        <div class="d-flex">
-                            <button class="btn btn-outline-light me-1">
-                               <img src="../resourses/wishlist-star.png" width="20" height="20">
-                           </button>
-                           <button class="btn btn-outline-light">
-                               <img src="../resourses/calendar-plus.png" width="20" height="20">
-                            </button>
+    card.innerHTML = `
+        <div class="event-cards row">
+            <div class="col">
+                <div class="card p-3 h-100 mb-4 d-flex flex-column">
+                    <div class="row g-0">
+                        <!-- Imagen -->
+                        <div class="col-8">
+                            <img src="${event.image}" class="img-fluid" alt="Imagen">
+                        </div>
+                        <div class="col-4 d-flex flex-column align-items-center justify-content-between">
+                            <div class="text-center">
+                                <h1 id="day" class="display-4 text-danger">${event.day}</h1>
+                                <p id="month" class="text-primary">${event.month}</p>
+                            </div>
+                            <div class="d-flex">
+                                <button class="btn btn-outline-light me-1">
+                                    <img src="../resourses/wishlist-star.png" width="20" height="20">
+                                </button>
+                                <button class="btn btn-outline-light">
+                                    <img src="../resourses/calendar-plus.png" width="20" height="20">
+                                </button>
+                            </div>
                         </div>
                     </div>
-               </div>
-                       
-               <div class="event-details mt-3">
-                    <h4 class="event-title">${event.title}</h4>
-                    <h6 class="event-place">${event.place}.</h6>
-                    <p class="event-description flex-grow-1">${event.description}</p>
+                    <div class="event-details mt-3">
+                        <h4 class="event-title">${event.title}</h4>
+                        <h6 class="event-place">${event.place}.</h6>
+                        <p class="event-description flex-grow-1">${event.description}</p>
+                        <button class="btn btn-outline-light">
+                            <img src="/Inicio/assets/íconos/pen-field.png" width="25" height="25" alt="edit">
+                        </button>
+                        <button class="btn btn-outline-light delete-event">
+                            <img src="/Inicio/assets/íconos/trash.svg" width="25" height="25" alt="delete">
+                        </button>
+                    </div>
                 </div>
-           </div>
+            </div>
         </div>
-`;
+    `;
 
     eventContainer.appendChild(card);
+
+    // Agregar funcionalidad de eliminación a cada botón de eliminar al crear la tarjeta
+    card.querySelector('.delete-event').addEventListener('click', () => {
+        Swal.fire({
+            title: "¿Estás segur@?",
+            text: "¡Una vez que elimines este evento no podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Eliminar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Eliminar la card de evento
+                card.remove();
+
+                // Función para borrar del localStorage
+                removeEventFromLocalStorage(event.id);
+
+                Swal.fire(
+                    '¡Eliminado!',
+                    'El evento ha sido eliminado.',
+                    'success'
+                );
+            }
+        });
+    });
 }
 
 // Función para cargar eventos desde el localStorage y crear las tarjetas
@@ -52,7 +83,8 @@ function loadEventsFromLocalStorage() {
     events.forEach(event => {
         // Adaptar la estructura del evento si es necesario
         const eventData = {
-            image: event.image || '../resourses/eventonuevo.png', // Imagen por defecto 
+            id: event.id,
+            image: event.image || '../resourses/eventonuevo.png', // Imagen por defecto
             day: new Date(event.fecha).getDate(), // Obtener el día de la fecha
             month: new Date(event.fecha).toLocaleString('es-ES', { month: 'short' }), // Obtener el mes de la fecha
             title: event.nombre,
@@ -63,8 +95,12 @@ function loadEventsFromLocalStorage() {
     });
 }
 
+// Función para eliminar el evento del localStorage
+function removeEventFromLocalStorage(eventId) {
+    let events = JSON.parse(localStorage.getItem('eventos')) || [];
+    events = events.filter(event => event.id !== eventId);
+    localStorage.setItem('eventos', JSON.stringify(events));
+}
+
 // Cargar los eventos al cargar la página
 loadEventsFromLocalStorage();
-
-// Crear los eventos inicialmente de la const de ejemplos:
-//events.forEach(createEventCard);
