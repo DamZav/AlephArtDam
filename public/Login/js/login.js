@@ -1,16 +1,40 @@
 // Función para validar credenciales
-function validarCredenciales(email, contraseña) {
-    const usuariosAlmacenados = JSON.parse(localStorage.getItem("users"));
-    if (!usuariosAlmacenados) {
-        return false; // No hay usuarios almacenados
-    }
+async function validarCredenciales(email, contraseña) {
+    // const usuariosAlmacenados = JSON.parse(localStorage.getItem("users"));
+    try {
+        const response = await fetch('https://alephart.up.railway.app/api/users/login', { // si hay login???
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // mandamos email y contraseña
+            body: JSON.stringify({ 
+                email: email, 
+                password: contraseña 
+            })
+        });
 
-    // Validar si el email y la contraseña coinciden con algún usuario almacenado
-    return usuariosAlmacenados.some(user => user.email === email && user.contraseña === contraseña);
+        if (!response.ok) {
+            throw new Error('Error en l repuesta sel servidor.');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.setItem(---no se qué contestará---);
+            return true; // Credenciales válidaas
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('Error al validar credenciales', error);
+        return false;
+    }
 }
 
+
 // Manejar el inicio de sesión
-document.getElementById("formularioRegistro").addEventListener("submit", function(event) {
+document.getElementById("formularioRegistro").addEventListener("submit", async function(event) {
     event.preventDefault();
 
     const email = document.getElementById("email").value.trim();
@@ -27,7 +51,9 @@ document.getElementById("formularioRegistro").addEventListener("submit", functio
     }
 
     // Validar credenciales
-    if (validarCredenciales(email, contraseña)) {
+    const esValido = await validarCredenciales(email, password);
+
+    if (esValido) {
         Swal.fire({
             icon: "success",
             title: "Inicio de sesión exitoso",
@@ -45,3 +71,6 @@ document.getElementById("formularioRegistro").addEventListener("submit", functio
         });
     }
 });
+
+
+// https://alephart.up.railway.app/api/users
