@@ -1,3 +1,4 @@
+**.**
 
 <br>
 Dentro de la carpeta public 
